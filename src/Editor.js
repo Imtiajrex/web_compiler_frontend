@@ -1,7 +1,8 @@
 import React from "react";
+import { useState } from "react";
 import { useRef } from "react";
 
-export default function Editor() {
+export default function Editor({ activeFile }) {
   let editorRef = useRef();
   let editorKeyDown = (e) => {
     if (e.key === "Tab" && !e.shiftKey) {
@@ -25,6 +26,34 @@ export default function Editor() {
       return false;
     }
   };
+
+  let file = localStorage.getItem(activeFile);
+
+  React.useEffect(() => {
+    console.log(activeFile, file);
+    if (activeFile != null)
+      setCode(typeof file == "string" ? JSON.parse(file).value : "");
+  }, [activeFile, file]);
+  const [code, setCode] = useState(
+    typeof file == "string" ? JSON.parse(file).value : ""
+  );
+
+  const handleChange = (e) => {
+    setCode(e.target.value);
+    let file_content = localStorage.getItem(activeFile);
+
+    file_content =
+      typeof file == "string"
+        ? JSON.parse(file_content)
+        : { name: "", value: "" };
+
+    let new_file_content = JSON.stringify({
+      ...file_content,
+      value: e.target.value,
+    });
+
+    localStorage.setItem(activeFile, new_file_content);
+  };
   return (
     <div className="editor">
       <div className="editor-buttons">
@@ -37,6 +66,9 @@ export default function Editor() {
           ref={editorRef}
           onKeyDown={editorKeyDown}
           spellCheck={false}
+          value={code}
+          onChange={handleChange}
+          disabled={activeFile == null}
         />
       </div>
     </div>

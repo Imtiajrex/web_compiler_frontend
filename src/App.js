@@ -18,7 +18,7 @@ function App() {
         />
       </div>
       <div className="code-section">
-        <Editor />
+        <Editor activeFile={activeFile} />
         <Output />
       </div>
     </div>
