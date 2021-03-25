@@ -58,6 +58,12 @@ a {
           font-size: 13px;
         }
       }
+      .active {
+        background-color: $secondary-color;
+        a {
+          color: $default-color;
+        }
+      }
     }
   }
   .code-section {
