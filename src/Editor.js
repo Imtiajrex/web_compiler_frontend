@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useRef } from "react";
 
-export default function Editor({ activeFile }) {
+export default function Editor({ activeFile, setFiles }) {
   let editorRef = useRef();
   let editorKeyDown = (e) => {
     if (e.key === "Tab" && !e.shiftKey) {
@@ -26,13 +26,17 @@ export default function Editor({ activeFile }) {
       return false;
     }
   };
+  const [file_name, setFileName] = useState("");
 
   let file = localStorage.getItem(activeFile);
 
   React.useEffect(() => {
-    console.log(activeFile, file);
-    if (activeFile != null)
-      setCode(typeof file == "string" ? JSON.parse(file).value : "");
+    console.log(activeFile);
+    if (activeFile != null && activeFile != "") {
+      let file_content = typeof file == "string" ? JSON.parse(file) : {};
+      setCode(file_content.value);
+      setFileName(file_content.name);
+    }
   }, [activeFile, file]);
   const [code, setCode] = useState(
     typeof file == "string" ? JSON.parse(file).value : ""
@@ -54,12 +58,39 @@ export default function Editor({ activeFile }) {
 
     localStorage.setItem(activeFile, new_file_content);
   };
+
+  const handleName = (e) => {
+    setFileName(e.target.value);
+    let file_content = localStorage.getItem(activeFile);
+
+    file_content =
+      typeof file == "string"
+        ? JSON.parse(file_content)
+        : { name: "", value: "" };
+
+    let new_file_content = JSON.stringify({
+      ...file_content,
+      name: e.target.value,
+    });
+
+    localStorage.setItem(activeFile, new_file_content);
+    setFiles(Object.entries(localStorage));
+  };
   return (
     <div className="editor">
       <div className="editor-buttons">
         <button className="button">
           <a>Run</a> <i className="fas fa-play" />
         </button>
+      </div>
+      <div className="editor-name">
+        <input
+          type="text"
+          placeholder="File Name"
+          value={file_name}
+          onChange={handleName}
+          disabled={activeFile == null || activeFile == ""}
+        />
       </div>
       <div className="editor-textarea">
         <textarea
@@ -68,7 +99,7 @@ export default function Editor({ activeFile }) {
           spellCheck={false}
           value={code}
           onChange={handleChange}
-          disabled={activeFile == null}
+          disabled={activeFile == null || activeFile == ""}
         />
       </div>
     </div>
