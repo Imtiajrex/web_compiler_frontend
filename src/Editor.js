@@ -98,6 +98,7 @@ export default function Editor({ activeFile, setFiles }) {
           onKeyDown={editorKeyDown}
           spellCheck={false}
           value={code}
+          onFocus={() => window.scrollTo(0, editorRef.current.offsetTop)}
           onChange={handleChange}
           disabled={activeFile == null || activeFile == ""}
         />
