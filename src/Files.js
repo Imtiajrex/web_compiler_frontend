@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 /* eslint-disable eqeqeq */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
@@ -26,6 +27,16 @@ export default function Files({ files, setFiles, activeFile, setActiveFile }) {
 			</div>
 			<small style={{ color: "grey", fontSize: "9px" }}>
 				Click on the name of the file to select!
+			</small>
+
+			<small style={{ color: "grey", fontSize: "9px" }}>
+				<a
+					href="https://github.com/Raihan-28011/ncc"
+					target="_blank"
+					style={{ color: "yellow" }}
+				>
+					Webpiler Repository!
+				</a>{" "}
 			</small>
 			{files.length > 0 &&
 				files.map((e, idx) => {

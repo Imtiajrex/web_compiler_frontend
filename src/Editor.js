@@ -119,6 +119,7 @@ export default function Editor({
 				<textarea
 					ref={editorRef}
 					onKeyDown={editorKeyDown}
+					placeholder="Code here"
 					spellCheck={false}
 					value={code}
 					onFocus={() => window.scrollTo(0, editorRef.current.offsetTop)}
