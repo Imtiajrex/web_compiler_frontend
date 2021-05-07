@@ -1,10 +1,15 @@
 import React from "react";
 
-export default function Output() {
-  return (
-    <div className="output">
-      <div className="head">Output</div>
-      <div className="content">No Compiler Attached!</div>
-    </div>
-  );
+export default function Output({ result, compiling }) {
+	return (
+		<div className="output">
+			<div className="head">Output</div>
+			<div
+				className="content"
+				dangerouslySetInnerHTML={{
+					__html: compiling ? "Code is Compiling. Wait a moment." : result,
+				}}
+			></div>
+		</div>
+	);
 }
