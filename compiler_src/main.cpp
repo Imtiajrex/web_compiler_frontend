@@ -5237,12 +5237,17 @@ extern "C"
         fflush(stdout);
         fflush(stderr);
         fflush(stdin);
+        
+    if (len >= 4 && argv[len-1] == 'c' && argv[len-2] == 'n' && argv[len-3] == '.') {
         if (!read_file(argv))
         {
             return EXIT_FAILURE;
         }
-
-
+    } else {
+        std::fprintf(stderr, "ncc: " BOLD_RED "error" NORMAL ": unknown file format. Only files with extension 'nc' are supported\n");
+        
+        return EXIT_FAILURE;
+    }
 
         save_all_lines();
 

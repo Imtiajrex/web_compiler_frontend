@@ -4,7 +4,7 @@ import NCCModule from "./ncc";
 
 let result = "";
 
-let method = async (code) => {
+let compile = async (code, file_name) => {
 	let instance = await NCCModule({
 		noInitialRun: true,
 		// noExitRuntime: true,
@@ -13,14 +13,14 @@ let method = async (code) => {
 				if (arguments.length > 1)
 					text = Array.prototype.slice.call(arguments).join(" ");
 				// console.log(text);
-				result = result + "<br/><a  style='color:#47ffa0'>" + text + "</a>";
+				result = result + "<br/><a  style='color:white'>" + text + "</a>";
 			};
 		})(),
 		printErr: function (text) {
 			if (arguments.length > 1)
 				text = Array.prototype.slice.call(arguments).join(" ");
 			// console.log(("Error:", text));
-			result = result + "<br/><a style='color:red'>" + text + "</a>";
+			result = result + "<br/><a style='color:#fc516b'>" + text + "</a>";
 		},
 	});
 
@@ -28,7 +28,6 @@ let method = async (code) => {
 	var blob = new Blob([code], { type: "text/plain" });
 	var newBlob = await new Response(blob).arrayBuffer();
 	let data = new Uint8Array(newBlob);
-	let file_name = "file" + Date.now() + ".nc";
 
 	instance.FS_createDataFile("", file_name, data, true, true, true);
 	instance.ccall("web_main", "number", ["string"], [file_name]);
@@ -37,4 +36,4 @@ let method = async (code) => {
 	result = "";
 	return res;
 };
-export default method;
+export default compile;

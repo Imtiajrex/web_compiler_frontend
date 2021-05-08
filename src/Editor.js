@@ -3,7 +3,7 @@
 import React from "react";
 import { useState } from "react";
 import { useRef } from "react";
-import method from "./glue";
+import compile from "./glue";
 
 export default function Editor({
 	activeFile,
@@ -11,6 +11,7 @@ export default function Editor({
 	setResult,
 	compiling,
 	setCompiling,
+	setActiveFile,
 }) {
 	let editorRef = useRef();
 	let editorKeyDown = (e) => {
@@ -40,13 +41,20 @@ export default function Editor({
 	let file = localStorage.getItem(activeFile);
 
 	React.useEffect(() => {
-		console.log(activeFile);
 		if (activeFile != null && activeFile != "") {
 			let file_content = typeof file == "string" ? JSON.parse(file) : {};
 			setCode(file_content.value);
 			setFileName(file_content.name);
 		}
 	}, [activeFile, file]);
+	React.useEffect(() => {
+		console.log(activeFile, "noe");
+		if (activeFile != "" && localStorage.getItem(activeFile) == null) {
+			setActiveFile("");
+			setCode("");
+			setFileName("");
+		}
+	}, [activeFile]);
 	const [code, setCode] = useState(
 		typeof file == "string" ? JSON.parse(file).value : ""
 	);
@@ -86,9 +94,9 @@ export default function Editor({
 		setFiles(Object.entries(localStorage));
 	};
 
-	const compile = () => {
+	const run = () => {
 		setCompiling(true);
-		method(code)
+		compile(code, file_name)
 			.then((res) => {
 				setCompiling(false);
 				setResult(res);
@@ -100,13 +108,8 @@ export default function Editor({
 	};
 	return (
 		<div className="editor">
-			<div className="editor-buttons">
-				<button className="button" onClick={compile}>
-					<a>{compiling ? "Compiling..." : "Run"}</a>{" "}
-					<i className="fas fa-play" />
-				</button>
-			</div>
 			<div className="editor-name">
+				File Name
 				<input
 					type="text"
 					placeholder="File Name"
@@ -115,7 +118,9 @@ export default function Editor({
 					disabled={activeFile == null || activeFile == ""}
 				/>
 			</div>
+
 			<div className="editor-textarea">
+				Code
 				<textarea
 					ref={editorRef}
 					onKeyDown={editorKeyDown}
@@ -126,6 +131,12 @@ export default function Editor({
 					onChange={handleChange}
 					disabled={activeFile == null || activeFile == ""}
 				/>
+			</div>
+			<div className="editor-buttons">
+				<button className="button" onClick={run}>
+					<a>{compiling ? "Compiling..." : "Run"}</a>{" "}
+					<i className="fas fa-play" />
+				</button>
 			</div>
 		</div>
 	);
